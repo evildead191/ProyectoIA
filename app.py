@@ -14,6 +14,8 @@ if archivo:
     df = cargar_datos(archivo)
 
     if df is not None:
+        df_original = df.copy()
+
         df = limpiar_datos(df)
         df = manejar_nulos(df)
         df = convertir_fechas(df)

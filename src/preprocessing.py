@@ -16,10 +16,18 @@ def manejar_nulos(df):
 
 def convertir_fechas(df):
     for col in df.columns:
-        try:
-            df[col] = pd.to_datetime(df[col], errors='ignore')
-        except Exception:
-            pass
+        # solo intentar convertir si la columna es texto
+        if df[col].dtype == 'object':
+            try:
+                df[col] = pd.to_datetime(df[col], errors='coerce')
+
+                # si más del 70% son fechas válidas, se deja como fecha
+                if df[col].notnull().sum() / len(df) < 0.7:
+                    df[col] = df[col].astype(str)
+
+            except:
+                pass
+
     return df
 
 def detectar_tipos(df):
