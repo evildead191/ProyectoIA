@@ -1,12 +1,25 @@
 import pandas as pd
 
 def limpiar_datos(df):
-    return df.drop_duplicates()
+    df = df.drop_duplicates()
+    return df
 
 def manejar_nulos(df):
     columnas_numericas = df.select_dtypes(include=['number']).columns
+
     if len(columnas_numericas) > 0:
-        df[columnas_numericas] = df[columnas_numericas].fillna(df[columnas_numericas].mean())
+        df[columnas_numericas] = df[columnas_numericas].fillna(
+            df[columnas_numericas].mean()
+        )
+
+    return df
+
+def convertir_fechas(df):
+    for col in df.columns:
+        try:
+            df[col] = pd.to_datetime(df[col], errors='ignore')
+        except Exception:
+            pass
     return df
 
 def detectar_tipos(df):

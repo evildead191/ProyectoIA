@@ -1,30 +1,35 @@
 def estadisticas(df):
     numericas = df.select_dtypes(include=['number'])
+
     if numericas.empty:
         return "No hay columnas numéricas para calcular estadísticas descriptivas."
+
     return numericas.describe()
 
 def correlacion(df):
     numericas = df.select_dtypes(include=['number'])
+
     if numericas.empty:
         return "No hay columnas numéricas para calcular correlación."
+
     return numericas.corr()
 
-from src.data_loader import cargar_datos
-from src.preprocessing import limpiar_datos, manejar_nulos, detectar_tipos
-from src.analysis import estadisticas, correlacion
+def resumen_categorico(df):
+    resumen = {}
 
-def pipeline_completo(file):
-    df = cargar_datos(file)
+    columnas_categoricas = df.select_dtypes(include=['object']).columns
 
-    if df is None:
-        return None
+    for col in columnas_categoricas:
+        resumen[col] = df[col].value_counts().head(5)
 
-    df = limpiar_datos(df)
-    df = manejar_nulos(df)
-    tipos = detectar_tipos(df)
+    return resumen
 
-    stats = estadisticas(df)
-    corr = correlacion(df)
+def valores_nulos(df):
+    return df.isnull().sum()
 
-    return df, tipos, stats, corr
+def dimensiones(df):
+    filas, columnas = df.shape
+    return {
+        "filas": filas,
+        "columnas": columnas
+    }
